@@ -361,11 +361,11 @@
 
             document.getElementById('val_hum').innerText = formatVal(d1.field2) + ' %';
             document.getElementById('val_dew').innerText = formatVal(d1.field3) + ' °C'; // Rosný bod
-            document.getElementById('val_aqi').innerText = formatVal(d1.field6); // Kvalita ovzduší
+            document.getElementById('val_aqi').innerText = formatVal(d1.field6) + ' ppm'; // Kvalita ovzduší
 
             // Skupina 2: Vítr a Srážky
-            document.getElementById('val_wind').innerText = formatVal(d2.field1) + ' m/s';
-            document.getElementById('val_gust').innerText = formatVal(d2.field2) + ' m/s'; // Max náraz
+            document.getElementById('val_wind').innerText = formatVal(d2.field1) + ' km/h';
+            document.getElementById('val_gust').innerText = formatVal(d2.field2) + ' km/h'; // Max náraz
             document.getElementById('val_winddir').innerText = (d2.field3 || '--') + ' °'; // Směr
             document.getElementById('val_rain1h').innerText = formatVal(d2.field4) + ' mm';
             document.getElementById('val_rainday').innerText = formatVal(d2.field5) + ' mm';
@@ -377,7 +377,7 @@
 
             // Skupina 4: Slunce
             document.getElementById('val_light').innerText = formatVal(d1.field4) + ' lx'; // Osvětlení
-            document.getElementById('val_uv').innerText = formatVal(d1.field5); // UV Index
+            document.getElementById('val_uv').innerText = formatVal(d1.field5) + ' mW/cm²'; // UV Index
             document.getElementById('val_heatindex').innerText = formatVal(d2.field8) + ' °C'; // Tepelný index
 
             // Čas aktualizace (bere se z prvního kanálu, předpokládáme stejnou četnost)
@@ -396,4 +396,5 @@
 </body>
 
 </html>
+
 
