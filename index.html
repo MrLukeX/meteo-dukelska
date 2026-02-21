@@ -1,1 +1,397 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteostanice SPŠSE Dukelská</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0288d1;
+            --secondary: #03a9f4;
+            --accent: #ff9800;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Hlavička s logem */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            text-align: center;
+            border: 2px dashed white;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Hlavní rozvržení */
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 3fr 1fr; /* Levý panel pro data, pravý pro info */
+            gap: 30px;
+        }
+
+        /* Skupiny dat */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .category {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+
+        .category.sun { border-top-color: var(--accent); }
+        .category.wind { border-top-color: #00bcd4; }
+        .category.pressure { border-top-color: #9c27b0; }
+
+        .category h2 {
+            font-size: 1.2em;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .data-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-item .label {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-item .value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Pravý informační panel */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .station-img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .app-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #3ddc84; /* Android color */
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(61, 220, 132, 0.4);
+        }
+
+        .app-btn:hover {
+            background-color: #35c073;
+            transform: translateY(-2px);
+        }
+
+        .timestamp {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        /* Responzivita */
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtOwXG8YiBpGMKHTpgXua3PS9IeXCU6g0Fuw&s" alt="Logo školy" width="80">
+        <div>
+            <h1>Meteostanice SPŠSE Dukelská 13</h1>
+            <p>Aktuální stav počasí – data ze školní střechy</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            
+            <div class="category">
+                <h2><i class="fa-solid fa-temperature-half" style="color:#e74c3c;"></i> Teplota a Vzduch</h2>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="label">Teplota</span>
+                        <span class="value" id="val_temp">-- °C</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Pocitová teplota</span>
+                        <span class="value" id="val_feels">-- °C</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Min / Max dnes</span>
+                        <span class="value" id="val_minmax">-- / -- °C</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Vlhkost</span>
+                        <span class="value" id="val_hum">-- %</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Rosný bod</span>
+                        <span class="value" id="val_dew">-- °C</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Kvalita ovzduší</span>
+                        <span class="value" id="val_aqi">-- AQI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category wind">
+                <h2><i class="fa-solid fa-wind" style="color:#3498db;"></i> Vítr a Srážky</h2>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="label">Rychlost větru</span>
+                        <span class="value" id="val_wind">-- m/s</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Max. nárazy</span>
+                        <span class="value" id="val_gust">-- m/s</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Směr větru</span>
+                        <span class="value" id="val_winddir">-- °</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Srážky (1h)</span>
+                        <span class="value" id="val_rain1h">-- mm</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Srážky (Dnes)</span>
+                        <span class="value" id="val_rainday">-- mm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category pressure">
+                <h2><i class="fa-solid fa-cloud" style="color:#9b59b6;"></i> Tlak a Obloha</h2>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="label">Absolutní tlak</span>
+                        <span class="value" id="val_pres_abs">-- hPa</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Relativní tlak</span>
+                        <span class="value" id="val_pres_rel">-- hPa</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Výška mraků</span>
+                        <span class="value" id="val_cloudbase">-- m</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category sun">
+                <h2><i class="fa-solid fa-sun" style="color:#f39c12;"></i> Slunce</h2>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="label">Intenzita osvětlení</span>
+                        <span class="value" id="val_light">-- lx</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">UV Index</span>
+                        <span class="value" id="val_uv">--</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">Tepelný index</span>
+                        <span class="value" id="val_heatindex">-- °C</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sidebar">
+            <div class="info-card" style="border-top: 4px solid #3ddc84;">
+                <h3>Sledujte nás v mobilu</h3>
+                <p style="font-size: 0.9em; color: var(--text-muted); margin: 10px 0 20px 0;">Mějte přehled o počasí u školy neustále u sebe pomocí naší Android aplikace.</p>
+                <a href="https://martanal.cz/meteoapp/app-release.apk" class="app-btn"><i class="fa-brands fa-android fa-lg"></i> Stáhnout aplikaci</a>
+            </div>
+
+
+            <div class="info-card">
+                <img src="https://martanal.cz/meteoapp/meteo.png" alt="Naše meteostanice" class="station-img">
+                <h3>O stanici</h3>
+                <p style="font-size: 0.9em; color: var(--text-muted); margin-bottom: 15px;">Tato profesionální měřící stanice poskytuje živá data pro výuku a veřejnost.</p>
+                <div class="timestamp">
+                    <i class="fa-regular fa-clock"></i> Poslední data:<br>
+                    <strong id="last_update">Načítám...</strong>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+
+    <script>
+        // --- NASTAVENÍ THINGSPEAK KANÁLŮ ---
+        const ch1_ID = '2098376'; 
+        const ch1_KEY = 'KANAL_1_KEY';
+
+        const ch2_ID = '2098670'; 
+        const ch2_KEY = 'KANAL_2_KEY';
+
+        const ch3_ID = '2136251'; 
+        const ch3_KEY = 'KANAL_3_KEY';
+
+        // Funkce pro formátování (pokud hodnota existuje, zaokrouhlí na 1 des. místo)
+        const formatVal = (val) => val ? parseFloat(val).toFixed(1) : '--';
+
+        async function nactiData() {
+            try {
+                // Stažení dat ze všech 3 kanálů současně
+                const [res1, res2, res3] = await Promise.all([
+                    fetch(`https://api.thingspeak.com/channels/${ch1_ID}/feeds/last.json?`),
+                    fetch(`https://api.thingspeak.com/channels/${ch2_ID}/feeds/last.json?`),
+                    fetch(`https://api.thingspeak.com/channels/${ch3_ID}/feeds/last.json?`)
+                ]);
+
+                const data1 = await res1.json();
+                const data2 = await res2.json();
+                const data3 = await res3.json();
+
+                zobrazData(data1, data2, data3);
+
+            } catch (error) {
+                console.error("Chyba načítání dat:", error);
+                document.getElementById('last_update').innerText = "Chyba sítě!";
+            }
+        }
+
+        function zobrazData(d1, d2, d3) {
+            // === ZDE PŘIŘAĎ SPRÁVNÁ POLE K HODNOTÁM ===
+            // Například: pokud je Teplota ve 3. kanálu na field1, napiš d3.field1
+
+            // Skupina 1: Teplota a vzduch
+            document.getElementById('val_temp').innerText = formatVal(d1.field1) + ' °C'; 
+            document.getElementById('val_feels').innerText = formatVal(d2.field6) + ' °C'; // Pocitová
+            
+            // Min a Max (např. v kanálu 3 na field1 a field2)
+            let minT = formatVal(d3.field1);
+            let maxT = formatVal(d3.field2);
+            document.getElementById('val_minmax').innerText = `${minT} / ${maxT} °C`;
+
+            document.getElementById('val_hum').innerText = formatVal(d1.field2) + ' %';
+            document.getElementById('val_dew').innerText = formatVal(d1.field3) + ' °C'; // Rosný bod
+            document.getElementById('val_aqi').innerText = formatVal(d1.field6); // Kvalita ovzduší
+
+            // Skupina 2: Vítr a Srážky
+            document.getElementById('val_wind').innerText = formatVal(d2.field1) + ' m/s';
+            document.getElementById('val_gust').innerText = formatVal(d2.field2) + ' m/s'; // Max náraz
+            document.getElementById('val_winddir').innerText = (d2.field3 || '--') + ' °'; // Směr
+            document.getElementById('val_rain1h').innerText = formatVal(d2.field4) + ' mm';
+            document.getElementById('val_rainday').innerText = formatVal(d2.field5) + ' mm';
+
+            // Skupina 3: Tlak a Obloha
+            document.getElementById('val_pres_abs').innerText = formatVal(d1.field7) + ' hPa';
+            document.getElementById('val_pres_rel').innerText = formatVal(d1.field8) + ' hPa';
+            document.getElementById('val_cloudbase').innerText = formatVal(d2.field7) + ' m'; // Základna mraků
+
+            // Skupina 4: Slunce
+            document.getElementById('val_light').innerText = formatVal(d1.field4) + ' lx'; // Osvětlení
+            document.getElementById('val_uv').innerText = formatVal(d1.field5); // UV Index
+            document.getElementById('val_heatindex').innerText = formatVal(d2.field8) + ' °C'; // Tepelný index
+
+            // Čas aktualizace (bere se z prvního kanálu, předpokládáme stejnou četnost)
+            if(d1.created_at) {
+                const updateTime = new Date(d1.created_at);
+                document.getElementById('last_update').innerText = updateTime.toLocaleString('cs-CZ');
+            }
+        }
+
+        // První načtení
+        nactiData();
+
+        // Aktualizace každou minutu
+        setInterval(nactiData, 60000);
+    </script>
+</body>
+</html>
