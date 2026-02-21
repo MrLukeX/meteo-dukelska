@@ -366,7 +366,7 @@
             // Skupina 2: Vítr a Srážky
             document.getElementById('val_wind').innerText = formatVal(d2.field1) + ' km/h';
             document.getElementById('val_gust').innerText = formatVal(d2.field2) + ' km/h'; // Max náraz
-            document.getElementById('val_winddir').innerText = (d2.field3 || '--') + ' °'; // Směr
+            document.getElementById('val_winddir').innerText = (Math.round(d2.field3) || '--') + ' °'; // Směr
             document.getElementById('val_rain1h').innerText = formatVal(d2.field4) + ' mm';
             document.getElementById('val_rainday').innerText = formatVal(d2.field5) + ' mm';
 
@@ -396,5 +396,6 @@
 </body>
 
 </html>
+
 
 
